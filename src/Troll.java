@@ -7,6 +7,7 @@ public class Troll extends Personagem{
 	private ArrayList<Machado> machadoTroll = new ArrayList<>();
 	private boolean temaxe;
 
+	
 	public boolean isTemaxe() {
 		return temaxe;
 	}

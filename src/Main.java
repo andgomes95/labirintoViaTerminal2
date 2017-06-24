@@ -1,4 +1,8 @@
+
+import java.io.IOException;
 import java.util.Scanner;
+
+import org.json.simple.parser.ParseException;
 
 public class Main {
 
@@ -11,16 +15,15 @@ public class Main {
 			}
 			ambiente.getSalas()[b.getLocalizacao()].getTrolls().add(b);
 			if (b.isTemaxe() == false) {
-				if (ambiente.getSalas()[b.getLocalizacao()].getMachados().size() != 0) {
-					for (int j = 0; j < ambiente.getSalas()[b.getLocalizacao()].getMachados().size(); j++) {
-						if (ambiente.getSalas()[b.getLocalizacao()].getMachados().get(j).getMachadoTipo() == "Ouro") {
+				if (ambiente.getSalas()[b.getLocalizacao()].getMachados().size() != 0){
+					for(int j = 0; j < ambiente.getSalas()[b.getLocalizacao()].getMachados().size(); j++){
+						if(ambiente.getSalas()[b.getLocalizacao()].getMachados().get(j).getMachadoTipo() == "Ouro"){
 							b.getMachadoTroll().add(new Temouro());
 							b.setTemaxe(true);
-						} else if (ambiente.getSalas()[b.getLocalizacao()].getMachados().get(j)
-								.getMachadoTipo() == "Bronze") {
+						}else if(ambiente.getSalas()[b.getLocalizacao()].getMachados().get(j).getMachadoTipo() ==   "Bronze"){
 							b.getMachadoTroll().add(new Tembronze());
 							b.setTemaxe(true);
-						} else {
+						}else{
 							b.getMachadoTroll().add(new Temferro());
 							b.setTemaxe(true);
 						}
@@ -29,12 +32,12 @@ public class Main {
 				}
 			}
 			if ((ambiente.getSalas()[b.getLocalizacao()].isPersonagem() == true) && (b.isTemaxe() == true)) {
-				if (b.getMachadoTroll().get(0).getDurabilidade() == 1) {
+				if(b.getMachadoTroll().get(0).getDurabilidade() == 1){
 					b.getMachadoTroll().remove(0);
-				} else {
-					if (b.getMachadoTroll().get(0).getMachadoTipo() == "Ouro") {
+				}else{
+					if(b.getMachadoTroll().get(0).getMachadoTipo() == "Ouro"){
 						b.getMachadoTroll().get(0).setDurabilidade(b.getMachadoTroll().get(0).getDurabilidade() - 1);
-					} else if (b.getMachadoTroll().get(0).getMachadoTipo() == "Bronze") {
+					}else if(b.getMachadoTroll().get(0).getMachadoTipo() == "Bronze"){
 						b.getMachadoTroll().get(0).setDurabilidade(b.getMachadoTroll().get(0).getDurabilidade() - 1);
 					}
 				}
@@ -76,42 +79,7 @@ public class Main {
 		}
 	}
 
-	public static void mandarMachado(Player jogador, String comando, Ambiente ambiente) {
-		int identificacaoTroll = Integer.parseInt(comando.substring(comando.indexOf(" ") + 1));
-		boolean flagThrowAxe = false;
-
-		for (int i = 0; ambiente.trolls.size() > i; i++) {
-			if (ambiente.trolls.get(i).getLocalizacao() == jogador.getLocalizacao()
-					&& ambiente.trolls.get(i).getIdentificacao() == identificacaoTroll) {
-				flagThrowAxe = jogador.mandarMachado();
-				if (flagThrowAxe == true) {
-					System.out.println("MANDOU MACHADO");
-					for (int j = 0; j < ambiente.getSalas()[jogador.getLocalizacao()].getTrolls().size(); j++) {
-						if (ambiente.trolls.get(i).getIdentificacao() == ambiente.getSalas()[jogador.getLocalizacao()]
-								.getTrolls().get(j).getIdentificacao()) {
-							ambiente.getSalas()[jogador.getLocalizacao()].getTrolls().remove(j);
-						}
-					}
-					ambiente.trolls.remove(i);
-				} else {
-					System.out.println("Não há machado");
-				}
-				return;
-			}
-		}
-	}
-
-	public static void view(Player jogador, Ambiente ambiente) {
-		int i;
-		ambiente.getSalas()[jogador.getLocalizacao()].view();
-		for (i = 0; i < ambiente.trolls.size(); i++) {
-			if (ambiente.trolls.get(i).getLocalizacao() == jogador.getLocalizacao()) {
-				System.out.println("Troll na Sala. Nome -> " + ambiente.trolls.get(i).getIdentificacao());
-			}
-		}
-	}
-
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, ParseException {
 		Scanner scan = new Scanner(System.in);
 		Ambiente ambiente = new Ambiente();
 		Player jogador = new Player();
@@ -132,8 +100,7 @@ public class Main {
 			}
 			switch (selecaoComando) {
 			case "view":
-				view(jogador, ambiente);
-				break;
+				ambiente.getSalas()[jogador.getLocalizacao()].view();
 			case "moveTo":
 				action(jogador, comando);
 				break;
@@ -153,7 +120,7 @@ public class Main {
 				jogador.soltarItens(ambiente.getSalas()[jogador.getLocalizacao()], comando);
 				break;
 			case "throwAxe":
-				mandarMachado(jogador, comando, ambiente);
+				jogador.mandarMachado(ambiente.getSalas()[jogador.getLocalizacao()], comando);
 				break;
 			case "inventario":
 				jogador.printMochila();

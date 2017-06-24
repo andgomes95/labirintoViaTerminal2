@@ -106,18 +106,27 @@ public class Player extends Personagem {
 		this.chavePlayer = chavePlayer;
 	}
 	
-	public boolean mandarMachado() {
+	 public boolean mandarMachado(Sala sala, String comando) {
+		int identificacaoTroll = Integer.parseInt(comando.substring(comando.indexOf(" ") + 1));
         if (getMachadoPlayer().size() > 0) {
-            if(getMachadoPlayer().get(0).getDurabilidade() == 1){
-            	getMachadoPlayer().remove(0);
-            }else{
-            	getMachadoPlayer().get(0).setDurabilidade(getMachadoPlayer().get(0).getDurabilidade() - 1);
-            }
-            setQtdItens(getQtdItens() - 1);
-            return true;
+			for (int i = 0; sala.getTrolls().size() > i; i++) {
+				if(sala.getTrolls().get(i).getIdentificacao() == identificacaoTroll){
+		            if(getMachadoPlayer().get(0).getDurabilidade() == 1){
+		            	getMachadoPlayer().remove(0);
+		            }else{
+		            	getMachadoPlayer().get(0).setDurabilidade(getMachadoPlayer().get(0).getDurabilidade() - 1);
+		            }
+		            System.out.println("Mandou machado");
+		            sala.getTrolls().remove(i);
+		            System.out.println("AA" + sala.getTrolls().size());
+		            setQtdItens(getQtdItens() - 1);
+				}
+	            return true;
+			}
         }
         return false;
     }
+
 
 	void sairSala(Sala sala) {
 		String destinoSala = getObjetoProx();
@@ -226,6 +235,8 @@ public class Player extends Personagem {
 			if (sala.getTrolls().size() == 0) {
 				if (getObjetoProx().equals("Diamante")) {
 					if (sala.getDiamanteSala().get(0).getDiamante() != 0) {
+						System.out.println("S: " + sala.getDiamanteSala().get(0).getDiamante());
+						System.out.println("P: " + getDiamanteAtual().getDiamante());
 						getDiamanteAtual().setDiamante(
 								getDiamanteAtual().getDiamante() + sala.getDiamanteSala().get(0).getDiamante());
 						sala.getDiamanteSala().get(0).setDiamante(0);
@@ -332,7 +343,6 @@ public class Player extends Personagem {
 			}
 			break;
 		}
-		
 		if (getQtdItens() >= 0) {
 			switch (destinoMovimento) {
 			case "axe":
@@ -350,7 +360,6 @@ public class Player extends Personagem {
 						int disp = getMachadoPlayer().get(getMachadoOuro()).getDurabilidade();
 						sala.getMachados().add(new Temouro(disp));
 						getMachadoPlayer().remove(getMachadoOuro());
-						
 					}
 					//getMachadoPlayer().add(new Temferro());
 					//getMachadoPlayer().remove(sala.getMachadoFerro());
@@ -493,6 +502,7 @@ public class Player extends Personagem {
                             +" Chave: "+getChavePlayer().getChave()
                             +" Poção: "+getPocaoPlayer().getPocaoMagica());
     }
+	
 	public void verificaBaga(){
 		setMachadoOuro(50);
 		setMachadoBronze(50);
